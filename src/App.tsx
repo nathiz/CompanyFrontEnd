@@ -1,89 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { getAreas } from './services/api';
-import './App.css';
-import AddAreaForm from './form/AddAreaForm';
-import AddProcessForm from './form/AddProcessForm';
-import AddSubProcessForm from './form/AddSubProcessForm';
-
-// Definindo os tipos de dados
-interface SubProcess {
-  id: number;
-  name: string;
-}
-
-interface Process {
-  id: number;
-  name: string;
-  subProcesses: SubProcess[];
-}
-
-interface Area {
-  id: number;
-  name: string;
-  processes: Process[];
-}
+import React, { useState } from 'react';
+import CadastroArea from './components/CadastroArea';
+import CadastroProcesso from './components/CadastroProcesso';
+import CadastroSubProcesso from './components/CadastroSubProcesso';
+import { Area } from './models/Area';
+import { Process } from './models/Processo';
+import { SubProcess } from './models/SubProcesso';
 
 const App: React.FC = () => {
   const [areas, setAreas] = useState<Area[]>([]);
+  const [processos, setProcessos] = useState<Process[]>([]);
+  const [subprocessos, setSubprocessos] = useState<SubProcess[]>([]);
 
-  // UseEffect para buscar dados da API
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const areasResult = await getAreas(); // Chamada à API para pegar as áreas
-        setAreas(areasResult); // Atualiza o estado 'areas' com os dados da API
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-      }
+  // Função para cadastrar nova área
+  const cadastrarArea = (area: { nome: string; departamento: string; setor: string }) => {
+    const novaArea: Area = { ...area, id: areas.length + 1, processos: [] };
+    setAreas([...areas, novaArea]);
+  };
+
+  // Função para cadastrar novo processo
+  const cadastrarProcesso = (processo: { nome: string; descricao: string; areaId: number }) => {
+    const novoProcesso: Process = {
+      ...processo,
+      id: processos.length + 1,
+      ferramentas: [],
+      responsaveis: [],
+      documentos: [],
+      subprocessos: []
     };
+    setProcessos([...processos, novoProcesso]);
+  };
 
-    fetchData();
-  }, []); // Rodar apenas uma vez na montagem do componente
+  // Função para cadastrar novo subprocesso
+  const cadastrarSubProcesso = (subprocesso: SubProcess) => {
+    setSubprocessos([...subprocessos, subprocesso]);
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Company Process Management</h1>
-      </header>
+    <div>
+      <h1>Sistema de Cadastro de Processos</h1>
 
-      {/* Formulários para adicionar novos itens */}
-      <AddAreaForm />
-      <AddProcessForm />
-      <AddSubProcessForm />
+      <CadastroArea onCadastrar={cadastrarArea} />
 
-      <div>
-        {areas.length > 0 ? (
-          areas.map(area => (
-            <div key={area.id}>
-              <h2>{area.name}</h2>
-              <ul>
-                {/* Verifica se existe 'processes' dentro da área e então itera sobre eles */}
-                {area.processes.length > 0 ? (
-                  area.processes.map(process => (
-                    <li key={process.id}>
-                      {process.name}
-                      <ul>
-                        {/* Verifica se existe 'subProcesses' dentro de cada processo */}
-                        {process.subProcesses.length > 0 ? (
-                          process.subProcesses.map(subProcess => (
-                            <li key={subProcess.id}>{subProcess.name}</li>
-                          ))
-                        ) : (
-                          <li>No subprocesses available</li>
-                        )}
-                      </ul>
-                    </li>
-                  ))
-                ) : (
-                  <li>No processes available</li>
-                )}
-              </ul>
-            </div>
-          ))
-        ) : (
-          <p>No areas available</p>
-        )}
-      </div>
+      {areas.map((area) => (
+        <div key={area.id}>
+          <h2>{area.nome}</h2>
+          <CadastroProcesso areaId={area.id} onCadastrar={cadastrarProcesso} />
+          {processos
+            .filter((processo) => processo.areaId === area.id)
+            .map((processo) => (
+              <div key={processo.id}>
+                <h3>{processo.nome}</h3>
+                <CadastroSubProcesso
+                  processoId={processo.id}
+                  processo={processo}
+                  onCadastrar={cadastrarSubProcesso}
+                />
+                <ul>
+                  {subprocessos
+                    .filter((sub) => sub.processId === processo.id)
+                    .map((sub) => (
+                      <li key={sub.id}>{sub.nome}</li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+        </div>
+      ))}
     </div>
   );
 };
