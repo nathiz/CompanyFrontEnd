@@ -1,18 +1,38 @@
-.App {
+/* Barra preta no topo */
+.top-bar {
+  background-color: #000; /* Cor de fundo preta */
+  color: white; /* Texto em branco */
+  padding: 10px 0;
+  display: flex; /* Flexbox para alinhar os itens na horizontal */
+  justify-content: center; /* Centraliza os itens na barra */
+  position: sticky; /* Fixa a barra no topo */
+  top: 0;
+  width: 100%;
+}
+
+.top-bar a {
+  color: white; /* Cor do link branco */
+  margin: 0 20px; /* Espaçamento entre os links */
+  text-decoration: none; /* Remove o sublinhado */
+  font-size: 18px; /* Tamanho da fonte */
+}
+
+.top-bar a:hover {
+  text-decoration: underline; /* Sublinha o link quando o cursor está sobre ele */
+}
+
+/* Área com fundo branco e imagem */
+.main-content {
+  background-color: white; /* Cor de fundo branca */
+  background-image: url('sua-imagem.jpg'); /* Substitua 'sua-imagem.jpg' pela imagem desejada */
+  background-size: cover; /* Cobre toda a área com a imagem */
+  background-position: center; /* Centraliza a imagem */
+  padding: 60px 20px;
   text-align: center;
+  min-height: 60vh; /* Altura mínima */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
+/* Estilo do cabeçalho do app */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -22,17 +42,19 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  border-radius: 8px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Barra de rodapé */
+.footer {
+  background-color: #282c34; /* Cor do fundo do rodapé */
+  color: white; /* Cor do texto */
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-size: 14px;
 }
